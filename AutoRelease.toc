@@ -1,0 +1,9 @@
+## Interface: 50400
+## Title: AutoRelease
+## Version: 1.0.180106
+## Notes: Auto release corpse in battlegrounds.
+## Author: Cyprias
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: true
+
+core.lua
