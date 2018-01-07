@@ -7,7 +7,7 @@
 local folder, ns = ...
 
 -- Constants --
-local debugging             = true;             -- Various debugging messages.
+local debugging             = false;             -- Various debugging messages.
 
 -- Core
 local core      = CreateFrame("Frame");
