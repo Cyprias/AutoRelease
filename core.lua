@@ -8,6 +8,7 @@ local folder, ns = ...
 
 -- Constants --
 local debugging             = false;             -- Various debugging messages.
+local releaseDelay          = 0.250;             -- Wait 250 ms before releasing. Releasing too soon after death in wintergrasp seems to glitch game preventing the spirit from rezzing us.
 
 -- Core
 local core      = CreateFrame("Frame");
@@ -58,14 +59,13 @@ end
 	
 do
 	local GetRealZoneText = GetRealZoneText;
-	local RepopMe = RepopMe;
 	function core:PLAYER_DEAD(event, ...)
 		core:Debug("We died.");
 		if ( self:InBattleground() or GetRealZoneText() == "Wintergrasp" ) then
 			core:Debug("We're in a battleground.");
 			if (core:ShouldRelease() )then
 				core:Echo("Auto releasing...");
-				RepopMe()
+				core:Release()
 			end
 		end
 	end
@@ -91,4 +91,36 @@ do
 		end
 		return true;
 	end	
+end
+
+do
+	local CreateFrame = CreateFrame;
+	function core:Wait(miliseconds, callback)
+		local f = CreateFrame("Frame");
+		function onUpdate(self, elapsed)
+			self.totalElapsed = (self.totalElapsed or 0) + elapsed;
+			--core:Debug("totalElapsed: " .. self.totalElapsed);
+			if (self.totalElapsed < miliseconds) then 
+				return; 
+			end
+		
+			f:SetScript("OnUpdate", nil);
+			f = nil;
+
+			-- Call our callback.
+			callback();
+		end
+		f:SetScript("OnUpdate", onUpdate)
+	end
+end
+
+do
+	local RepopMe = RepopMe;
+	function core:Release()--	/script _AR:Release();
+		core:Debug("Waiting...");
+		self:Wait(releaseDelay, function()
+			core:Debug("Release!");
+			RepopMe();
+		end)
+	end
 end
