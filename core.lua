@@ -95,12 +95,12 @@ end
 
 do
 	local CreateFrame = CreateFrame;
-	function core:Wait(miliseconds, callback)
+	function core:Wait(seconds, callback)
 		local f = CreateFrame("Frame");
 		function onUpdate(self, elapsed)
 			self.totalElapsed = (self.totalElapsed or 0) + elapsed;
 			--core:Debug("totalElapsed: " .. self.totalElapsed);
-			if (self.totalElapsed < miliseconds) then 
+			if (self.totalElapsed < seconds) then 
 				return; 
 			end
 		
